@@ -5,7 +5,7 @@
 Create topic
 
 ```bash
-docker exec -it -w /opt/kafka/bin kafka \
+docker exec -it -w /opt/kafka/bin capstone-security-kafka-1 \
   ./kafka-topics.sh --create \
     --topic reservation-event \
     --bootstrap-server localhost:9092 \
@@ -16,7 +16,7 @@ docker exec -it -w /opt/kafka/bin kafka \
 Show messages
 
 ```bash
-docker exec -it -w /opt/kafka/bin kafka \
+docker exec -it -w /opt/kafka/bin capstone-security-kafka-1 \
   ./kafka-console-consumer.sh \
     --bootstrap-server localhost:9092 \
     --topic reservation-event \
