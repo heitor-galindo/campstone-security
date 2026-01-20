@@ -1,23 +1,17 @@
 package com.skistation.reservationms.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-import java.util.Date;
-
+/** The type Student dto. */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class StudentDTO {
-    Long idStudent;
-    String nomStudent;
-    String prenomStudent;
-    String nicStudent;
-    Date dateOfBirth;
+  private Long id;
+  private String firstName;
+  private String school;
+  private Integer age;
+  private Long reservationId;
 }
