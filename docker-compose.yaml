@@ -20,11 +20,6 @@ services:
       - ./keycloak/realm:/opt/keycloak/data/import
       - keycloak_data:/opt/keycloak/data
     restart: always
-  #    healthcheck:
-  #      test: [ "CMD", "curl", "-f", "http://localhost:8080/health/ready" ]
-  #      interval: 10s
-  #      timeout: 5s
-  #      retries: 10
 
   kafka:
     image: apache/kafka:4.1.1
@@ -49,11 +44,6 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
-  #    healthcheck:
-  #      test: [ "CMD-SHELL", "echo 'test-message' | /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic health-check-topic && /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic health-check-topic --from-beginning --max-messages 1 | grep 'test-message'" ]
-  #      interval: 15s
-  #      timeout: 10s
-  #      retries: 3
 
   eureka-server:
     build:
@@ -66,6 +56,23 @@ services:
       - "8761:8761"
     restart: on-failure
 
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PROJECT_DIR: gateway
+    image: ghcr.io/heitor-galindo/gateway:2.0.0
+    environment:
+      EUREKA_HOST: http://eureka-server:8761/eureka/
+      KEYCLOAK_ISSUER: http://keycloak:8080/realms/MsSecurity
+      SERVER_PORT: 8089
+      SPRING_PROFILES_ACTIVE: docker
+      LOG_LEVEL: INFO
+    ports:
+      - "8089:8089"
+    restart: on-failure
+
   student-ms:
     build:
       context: .
@@ -73,7 +80,6 @@ services:
       args:
         PROJECT_DIR: StudentMS
     image: ghcr.io/heitor-galindo/student-ms:2.0.0
-    container_name: capstone-security-student-ms
     environment:
       EUREKA_HOST: http://eureka-server:8761/eureka/
       KEYCLOAK_ISSUER: http://keycloak:8080/realms/MsSecurity
@@ -81,15 +87,12 @@ services:
       KAFKA_HOST: kafka:29092
       SPRING_PROFILES_ACTIVE: docker
       LOG_LEVEL: INFO
-    ports:
-      - "8084:8084"
+      SERVER_PORT: 8084
+#    ports:
+#      - "8084:8084"
     restart: on-failure
-  #    depends_on:
-  #      kafka:
-  #        condition: service_healthy
-  #      eureka-server:
-  #        condition: service_started
-
+    deploy:
+      replicas: 2
 
   reservation-ms:
     build:
@@ -106,36 +109,28 @@ services:
       KAFKA_HOST: kafka:29092
       SERVER_PORT: 8086
       SPRING_PROFILES_ACTIVE: docker
-      STUDENT_MS_URL: http://capstone-security-student-ms:8084
+#      STUDENT_MS_URL: http://student-ms:8084
       LOG_LEVEL: INFO
-    ports:
-      - "8086:8086"
+#    ports:
+#      - "8086:8086"
     restart: on-failure
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#      eureka-server:
-#        condition: service_started
+    deploy:
+      replicas: 2
+
+  postgres:
+    image: postgres:18
+    container_name: postgres
+    environment:
+      POSTGRES_DB: msdb
+      POSTGRES_USER: msuser
+      POSTGRES_PASSWORD: mspassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    restart: always
 
 volumes:
   keycloak_data:
-
-
-
-# =====================================================
-#
-#  gateway:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#      args:
-#        PROJECT_DIR: gateway
-#    image: ghcr.io/heitor-galindo/gateway:latest
-#    environment:
-#      EUREKA_HOST: http://eureka-server:8761/eureka/
-#      KEYCLOAK_ISSUER: http://keycloak:8080/realms/MsSecurity
-#    ports:
-#      - "8089:8089"
-#    restart: on-failure
-
+  postgres_data:
 

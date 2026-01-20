@@ -7,28 +7,24 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-/**
- * The interface Student client.
- */
-@FeignClient(
-    name = "STUDENTMS",
-    configuration = FeignClientConfigStudent.class,
-    url = "${student.ms.url}")
+/** The interface Student client. */
+@FeignClient(name = "STUDENTSMS", configuration = FeignClientConfigStudent.class)
+//    url = "${student.ms.url}"
 public interface StudentClient {
   /**
    * Gets student by id.
    *
    * @param id the id
-   * @return  the student by id
+   * @return the student by id
    */
-@GetMapping("/students/{id}")
+  @GetMapping("/students/{id}")
   StudentDTO getStudentById(@PathVariable Long id);
 
   /**
    * Gets students with reservations.
    *
-   * @return  the students with reservations
+   * @return the students with reservations
    */
-@GetMapping("/students/reservation")
+  @GetMapping("/students/reservation")
   List<StudentDTO> getStudentsWithReservations();
 }
