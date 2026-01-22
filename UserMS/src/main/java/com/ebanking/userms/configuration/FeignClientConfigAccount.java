@@ -16,22 +16,22 @@ public class FeignClientConfigAccount {
 
   @Bean
   public OAuth2AuthorizedClientManager authorizedClientManager(
-      ClientRegistrationRepository clientRegistrationRepository) {
+          ClientRegistrationRepository clientRegistrationRepository) {
 
     OAuth2AuthorizedClientService clientService =
-        new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
+            new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
 
     // Basic repository (not based on user principal)
     OAuth2AuthorizedClientRepository repo =
-        new AuthenticatedPrincipalOAuth2AuthorizedClientRepository(clientService);
+            new AuthenticatedPrincipalOAuth2AuthorizedClientRepository(clientService);
 
     DefaultOAuth2AuthorizedClientManager manager =
-        new DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository, repo);
+            new DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository, repo);
 
     manager.setAuthorizedClientProvider(
-        OAuth2AuthorizedClientProviderBuilder.builder()
-            .clientCredentials() // Important
-            .build());
+            OAuth2AuthorizedClientProviderBuilder.builder()
+                    .clientCredentials() // Important
+                    .build());
 
     return manager;
   }

@@ -16,34 +16,13 @@ public class SecurityConfig {
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
         .authorizeExchange(
-            auth -> auth.pathMatchers("/actuator/**").permitAll().anyExchange().authenticated())
+            auth ->
+                auth.pathMatchers("/account-service/accounts/**")
+                    .authenticated()
+                    .pathMatchers("/user-service/users/**")
+                    .authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
         .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
         .build();
   }
-  //  private final JwtConverter jwtConverter = new JwtConverter();
-  //
-  //  @Bean
-  //  public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-  //    return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
-  //        .authorizeExchange(
-  //            auth ->
-  //                auth
-  //                    // Only users with ADMIN role can access student endpoints
-  //                    .pathMatchers("/students/**")
-  //                    .hasRole("ADMIN")
-  //                    // All other endpoints under /msstudentservice/** require authentication
-  //                    .pathMatchers("/**")
-  //                    .authenticated())
-  //        .oauth2ResourceServer(
-  //            oauth2 ->
-  //                oauth2.jwt(
-  //                    jwt ->
-  //                        jwt.jwtAuthenticationConverter(
-  //                            new ReactiveJwtAuthenticationConverterAdapter(
-  //                                jwtConverter)) // Converts JWT claims to Spring Security
-  // authorities
-  //                    ))
-  //        .build();
-  //  }
 }

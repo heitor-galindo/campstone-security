@@ -21,8 +21,8 @@ public class OAuth2FeignRequestInterceptor implements RequestInterceptor {
   public void apply(RequestTemplate template) {
     var client =
         manager.authorize(
-            OAuth2AuthorizeRequest.withClientRegistrationId("ms-reservation")
-                .principal("reservation-service")
+            OAuth2AuthorizeRequest.withClientRegistrationId("user-service")
+                .principal("user-service")
                 .build());
     if (client != null && client.getAccessToken() != null) {
       String tokenValue = client.getAccessToken().getTokenValue();

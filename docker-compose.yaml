@@ -4,16 +4,15 @@ services:
     command:
       - start-dev
       - --import-realm
-      - --health-enabled=true
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: password
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       # Used when run the services out of docker
-#      KC_HOSTNAME: localhost
-    #       Used when run the services with docker-compose
+      #      KC_HOSTNAME: localhost
+      #       Used when run the services with docker-compose
       KC_HOSTNAME: keycloak
       KC_HOSTNAME_STRICT: false
-      KC_LOG_LEVEL: WARN
+      KC_LOG_LEVEL: INFO
     ports:
       - "8080:8080"
     volumes:
@@ -21,13 +20,13 @@ services:
       - keycloak_data:/opt/keycloak/data
     restart: always
 
-  eureka-server:
+  eureka:
     build:
       context: .
       dockerfile: Dockerfile
       args:
         PROJECT_DIR: EurekaServer
-    image: ghcr.io/heitor-galindo/eureka-server:3.0.0
+    image: ghcr.io/heitor-galindo/eureka:3.0.0
     ports:
       - "8761:8761"
     restart: on-failure
@@ -40,11 +39,12 @@ services:
         PROJECT_DIR: gateway
     image: ghcr.io/heitor-galindo/gateway:3.0.0
     environment:
-      EUREKA_HOST: http://eureka-server:8761/eureka/
+      EUREKA_HOST: http://eureka:8761/eureka/
       KEYCLOAK_ISSUER: http://keycloak:8080/realms/MsSecurity
       SERVER_PORT: 8089
       SPRING_PROFILES_ACTIVE: docker
       LOG_LEVEL: INFO
+      RESOURCE_ID: gateway
     ports:
       - "8089:8089"
     restart: on-failure
@@ -54,21 +54,26 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        PROJECT_DIR: StudentMS
-    image: ghcr.io/heitor-galindo/user-service:3.0.0
+        PROJECT_DIR: UserMS
+    image: ghcr.io/heitor-galindo/user-service:4.0.0
     environment:
-      EUREKA_HOST: http://eureka-server:8761/eureka/
+      EUREKA_HOST: http://eureka:8761/eureka/
       KEYCLOAK_ISSUER: http://keycloak:8080/realms/MsSecurity
       KEYCLOAK_TOKEN_URI: http://keycloak:8080/realms/MsSecurity/protocol/openid-connect/token
-      KAFKA_HOST: kafka:29092
+      KEYCLOAK_ADDRESS: http://keycloak:8080/
       SPRING_PROFILES_ACTIVE: docker
+      KEYCLOAK_REALM: MsSecurity
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       LOG_LEVEL: INFO
-      SERVER_PORT: 8084
+      SERVER_PORT: 8086
+      CLIENT_SECRET: 123asd
+      CLIENT_ID: user-service
+      APPLICATION_NAME: user-service
+      CLIENT_RESOURCE_ID: user-client
     ports:
-      - "8084:8084"
+      - "8086:8086"
     restart: on-failure
-    deploy:
-      replicas: 2
 
   account-service:
     build:
@@ -76,14 +81,13 @@ services:
       dockerfile: Dockerfile
       args:
         PROJECT_DIR: AccountMS
-    image: ghcr.io/heitor-galindo/account-service:3.0.0
+    image: ghcr.io/heitor-galindo/account-service:4.0.0
     environment:
-      EUREKA_HOST: http://eureka-server:8761/eureka/
+      EUREKA_HOST: http://eureka:8761/eureka/
       KEYCLOAK_ISSUER: http://keycloak:8080/realms/MsSecurity
       KEYCLOAK_TOKEN_URI: http://keycloak:8080/realms/MsSecurity/protocol/openid-connect/token
-      USER_CLIENT_SECRET: 123asd
       SERVER_PORT: 8084
-      APPLICATION_NAME: accountms
+      APPLICATION_NAME: account-service
       CLIENT_RESOURCE_ID: user-client
       SPRING_PROFILES_ACTIVE: docker
       LOG_LEVEL: INFO
@@ -91,9 +95,6 @@ services:
       - "8084:8084"
     restart: on-failure
 
-
-
 volumes:
   keycloak_data:
-  postgres_data:
 
