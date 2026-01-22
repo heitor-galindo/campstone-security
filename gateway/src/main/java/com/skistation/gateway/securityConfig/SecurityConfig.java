@@ -8,20 +8,11 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
-/**
- * The type Security config.
- */
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-  /**
-   * Spring security filter chain security web filter chain.
-   *
-   * @param http the http
-   * @return  the security web filter chain
-   */
-@Bean
+  @Bean
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
         .authorizeExchange(

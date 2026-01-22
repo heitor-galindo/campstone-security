@@ -1,4 +1,4 @@
-CREATE TABLE reservation
+CREATE TABLE user
 (
     id_reservation BIGSERIAL PRIMARY KEY,
     student_id     BIGINT    NOT NULL,

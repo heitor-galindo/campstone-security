@@ -11,19 +11,10 @@ import org.springframework.security.oauth2.client.web.AuthenticatedPrincipalOAut
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 
-/**
- * The type Feign client config student.
- */
 @Configuration
-public class FeignClientConfigStudent {
+public class FeignClientConfigAccount {
 
-  /**
-   * Authorized client manager o auth 2 authorized client manager.
-   *
-   * @param clientRegistrationRepository the client registration repository
-   * @return  the o auth 2 authorized client manager
-   */
-@Bean
+  @Bean
   public OAuth2AuthorizedClientManager authorizedClientManager(
       ClientRegistrationRepository clientRegistrationRepository) {
 

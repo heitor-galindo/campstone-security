@@ -7,7 +7,7 @@ Create topic
 ```bash
 docker exec -it -w /opt/kafka/bin capstone-security-kafka-1 \
   ./kafka-topics.sh --create \
-    --topic reservation-event \
+    --topic user-event \
     --bootstrap-server localhost:9092 \
     --partitions 3 \
     --replication-factor 1
@@ -19,8 +19,8 @@ Show messages
 docker exec -it -w /opt/kafka/bin capstone-security-kafka-1 \
   ./kafka-console-consumer.sh \
     --bootstrap-server localhost:9092 \
-    --topic reservation-event \
-    --group consumer-reservation \
+    --topic user-event \
+    --group consumer-user \
     --from-beginning
 ```
 
@@ -32,11 +32,11 @@ Get token
 curl --location 'http://localhost:8080/realms/MsSecurity/protocol/openid-connect/token' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'grant_type=client_credentials' \
---data-urlencode 'client_id=ms-reservation' \
+--data-urlencode 'client_id=ms-user' \
 --data-urlencode 'client_secret=123asd'
 ```
 
-Create reservation
+Create user
 
 ```bash
 curl --location --request POST 'http://localhost:8086/reservations?studentId=1' \

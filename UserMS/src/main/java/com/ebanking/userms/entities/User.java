@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-/** The type Reservation. */
 @Entity
 @Getter
 @Setter
@@ -13,26 +12,17 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @ToString
-public class Reservation {
+public class User {
 
-  /**
-   * The Id reservation.
-   */
-@Id
+  @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long idReservation;
+  Long id;
 
-  /**
-   * The Student id.
-   */
-@NonNull
+  @NonNull
   @Column(nullable = false)
-  Long studentId;
+  String customerName;
 
-  /**
-   * The Creation date.
-   */
-@CreationTimestamp
+  @CreationTimestamp
   @Column(nullable = false, updatable = false)
   LocalDateTime creationDate;
 }

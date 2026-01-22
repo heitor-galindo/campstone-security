@@ -3,13 +3,9 @@ package com.ebanking.userms;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-/** The type Reservation ms application tests. */
 @SpringBootTest
-class ReservationMsApplicationTests {
+class UserApplicationTests {
 
-  /**
-   * Context loads.
-   */
-@Test
+  @Test
   void contextLoads() {}
 }
